@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>当前日期和时间</title>
+    <style>
+        /* 浅色模式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .datetime {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* 深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            .container {
+                background-color: #1e1e1e;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            }
+
+            .datetime {
+                color: #1a73e8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>当前日期和时间</h1>
+        <div class="datetime" id="datetime"></div>
+    </div>
+
+    <script>
+        function update_date_time() {
+            const now = new Date();
+
+            // 格式化日期和时间
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const formattedDateTime = `${year} 年 ${month} 月 ${day} 日 ${hours} 时 ${minutes} 分 ${seconds} 秒`;
+            document.getElementById('datetime').textContent = formattedDateTime;
+        }
+
+        // 初始加载时更新一次
+        update_date_time();
+
+        // 每秒更新一次
+        setInterval(update_date_time, 1000);
+    </script>
+</body>
+
+</html>
