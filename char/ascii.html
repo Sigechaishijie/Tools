@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASCII 编码表</title>
     <style>
+        /* 全局样式 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -18,21 +19,13 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        body.dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-
         h1 {
             text-align: center;
             color: #007bff;
             margin-bottom: 20px;
         }
 
-        body.dark-mode h1 {
-            color: #1a73e8;
-        }
-
+        /* 浅色模式 */
         table {
             width: 80%;
             max-width: 800px;
@@ -44,11 +37,6 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-        body.dark-mode table {
-            background-color: #1e1e1e;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-        }
-
         th,
         td {
             padding: 12px;
@@ -57,35 +45,52 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        body.dark-mode th,
-        body.dark-mode td {
-            border-color: #555;
-        }
-
         th {
             background-color: #007bff;
             color: white;
             font-weight: bold;
         }
 
-        body.dark-mode th {
-            background-color: #1a73e8;
-        }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
-        }
-
-        body.dark-mode tr:nth-child(even) {
-            background-color: #2d2d2d;
         }
 
         tr:hover {
             background-color: #f1f1f1;
         }
 
-        body.dark-mode tr:hover {
-            background-color: #3d3d3d;
+        /* 深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            h1 {
+                color: #1a73e8;
+            }
+
+            table {
+                background-color: #1e1e1e;
+                box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            }
+
+            th,
+            td {
+                border-color: #555;
+            }
+
+            th {
+                background-color: #1a73e8;
+            }
+
+            tr:nth-child(even) {
+                background-color: #2d2d2d;
+            }
+
+            tr:hover {
+                background-color: #3d3d3d;
+            }
         }
     </style>
 </head>
@@ -104,7 +109,7 @@
         <tbody>
             <script>
                 // ASCII 字符描述
-                const chars = [
+                const descriptions = [
                     "空字符 (Null)", "标题开始 (Start of Header)", "正文开始 (Start of Text)", "正文结束 (End of Text)",
                     "传输结束 (End of Transmission)", "查询 (Enquiry)", "确认 (Acknowledge)", "响铃 (Bell)",
                     "退格 (Backspace)", "水平制表符 (Horizontal Tab)", "换行 (Line Feed)", "垂直制表符 (Vertical Tab)",
@@ -130,7 +135,7 @@
                 ];
 
                 // 动态生成表格内容
-                document.querySelector("tbody").innerHTML = chars
+                document.querySelector("tbody").innerHTML = descriptions
                     .map((desc, i) => `
             <tr>
               <td>${i}</td>
@@ -143,13 +148,6 @@
             </script>
         </tbody>
     </table>
-
-    <script>
-        // 根据系统偏好初始化深色模式
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.body.classList.add("dark-mode");
-        }
-    </script>
 </body>
 
 </html>
