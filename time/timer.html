@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计时器</title>
+    <style>
+        /* 浅色模式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            background-color: #004080;
+        }
+
+        /* 深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            .container {
+                background-color: #1e1e1e;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            }
+
+            .timer {
+                color: #1a73e8;
+            }
+
+            button {
+                background-color: #444;
+                color: #e0e0e0;
+            }
+
+            button:hover {
+                background-color: #555;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>计时器</h1>
+        <div class="timer" id="timer">00:00:00</div>
+        <button id="start">开始</button>
+        <button id="pause">暂停</button>
+        <button id="reset">重置</button>
+    </div>
+
+    <script>
+        let timer;
+        let start_time;
+        let elapsed_time = 0;
+        let is_running = false;
+
+        function format_time(ms) {
+            return `${Math.floor(ms / 3600000).toString().padStart(2, '0')}:${Math.floor((ms % 3600000) / 60000).toString().padStart(2, '0')}:${Math.floor((ms % 60000) / 1000).toString().padStart(2, '0')}`;
+        }
+
+        function update_timer() {
+            elapsed_time += Date.now() - start_time;
+            start_time = Date.now();
+            document.getElementById('timer').textContent = format_time(elapsed_time);
+            timer = requestAnimationFrame(update_timer);
+        }
+
+        document.getElementById('start').addEventListener('click', () => {
+            if (!is_running) {
+                is_running = true;
+                start_time = Date.now();
+                elapsed_time += 1000; // 立即增加 1 秒
+                document.getElementById('timer').textContent = format_time(elapsed_time);
+                timer = requestAnimationFrame(update_timer);
+                document.getElementById('start').textContent = '继续';
+            }
+        });
+
+        document.getElementById('pause').addEventListener('click', () => {
+            if (is_running) {
+                is_running = false;
+                cancelAnimationFrame(timer);
+            }
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            is_running = false;
+            cancelAnimationFrame(timer);
+            elapsed_time = 0;
+            document.getElementById('timer').textContent = format_time(elapsed_time);
+            document.getElementById('start').textContent = '开始';
+        });
+    </script>
+</body>
+
+</html>
