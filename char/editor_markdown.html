@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown 编辑器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode #editor {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        body.dark-mode #editor code {
+            background-color: #444;
+        }
+
+        body.dark-mode #editor pre {
+            background-color: #444;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #fff;
+            color: #333;
+            resize: none;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        #editor h1,
+        #editor h2,
+        #editor h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        #editor h1 {
+            font-size: 24px;
+        }
+
+        #editor h2 {
+            font-size: 20px;
+        }
+
+        #editor h3 {
+            font-size: 18px;
+        }
+
+        #editor p {
+            margin: 10px 0;
+        }
+
+        #editor a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #editor a:hover {
+            text-decoration: underline;
+        }
+
+        #editor code {
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        #editor pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        #editor blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        #editor ul,
+        #editor ol {
+            padding-left: 20px;
+        }
+
+        #editor img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="editor" contenteditable="true"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        const editor = document.getElementById("editor");
+
+        function parse_markdown(markdown) {
+            return markdown
+                .replace(/```(\w+)\n([\s\S]*?)```/g, (_, lang, code) => `<pre><code class="language-${lang}">${code.trim()}</code></pre>`)
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function highlight_codeblocks() {
+            document.querySelectorAll("pre code").forEach((block) => hljs.highlightBlock(block));
+        }
+
+        function place_caret_at_end(element) {
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(element);
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            element.focus();
+        }
+
+        editor.addEventListener("input", () => {
+            editor.innerHTML = parse_markdown(editor.innerText);
+            highlight_codeblocks();
+            place_caret_at_end(editor);
+        });
+
+        editor.addEventListener("keydown", (event) => {
+            if (event.key === " ") {
+                event.preventDefault();
+                document.execCommand("insertText", false, " ");
+            }
+        });
+
+        editor.innerText = `# 欢迎使用 Markdown 编辑器
+
+这是一个简单的在线 Markdown 编辑器，支持**实时行内预览**和**深色模式**。
+
+## 功能支持
+
+- **标题**：使用 \`#\`、\`##\`、\`###\` 创建标题。
+- **加粗**：使用 \`**加粗**\`。
+- *斜体*：使用 \`*斜体*\`。
+- [链接](https://example.com)：使用 \`[文本](链接)\`。
+- \`行内代码\`：使用反引号包裹。
+- 代码块：
+\`\`\`python
+def hello():
+    print("Hello, world!")
+\`\`\`
+- 引用：
+> 这是一个引用块。
+
+## 开始写作吧！`;
+        editor.innerHTML = parse_markdown(editor.innerText);
+        highlight_codeblocks();
+
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.body.classList.add("dark-mode");
+        }
+    </script>
+</body>
+
+</html>
