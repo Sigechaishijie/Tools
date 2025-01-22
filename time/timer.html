@@ -40,6 +40,14 @@
             margin-bottom: 20px;
         }
 
+        .mode-selector {
+            margin-bottom: 20px;
+        }
+
+        .mode-selector label {
+            margin-right: 10px;
+        }
+
         button {
             font-size: 16px;
             padding: 10px 20px;
@@ -58,6 +66,22 @@
 
         button:active {
             background-color: #004080;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
         }
 
         /* 深色模式 */
@@ -84,6 +108,16 @@
             button:hover {
                 background-color: #555;
             }
+
+            input[type="number"] {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border-color: #555;
+            }
+
+            input[type="number"]:focus {
+                border-color: #1a73e8;
+            }
         }
     </style>
 </head>
@@ -91,40 +125,87 @@
 <body>
     <div class="container">
         <h1>计时器</h1>
+        <div class="mode-selector">
+            <label>
+                <input type="radio" name="mode" value="stopwatch" checked> 计时模式
+            </label>
+            <label>
+                <input type="radio" name="mode" value="countdown"> 倒计时模式
+            </label>
+        </div>
         <div class="timer" id="timer">00:00:00</div>
+        <div id="countdown-input" style="display: none;">
+            <input type="number" id="hours" placeholder="小时" min="0">
+            <input type="number" id="minutes" placeholder="分钟" min="0" max="59">
+            <input type="number" id="seconds" placeholder="秒" min="0" max="59">
+        </div>
         <button id="start">开始</button>
         <button id="pause">暂停</button>
         <button id="reset">重置</button>
     </div>
 
     <script>
-        let timer;
-        let start_time;
-        let elapsed_time = 0;
-        let is_running = false;
+        let timer, start_time, elapsed_time = 0, is_running = false, mode = 'stopwatch'; // 默认模式为计时模式
 
+        // 格式化时间
         function format_time(ms) {
             return `${Math.floor(ms / 3600000).toString().padStart(2, '0')}:${Math.floor((ms % 3600000) / 60000).toString().padStart(2, '0')}:${Math.floor((ms % 60000) / 1000).toString().padStart(2, '0')}`;
         }
 
+        // 更新计时器
         function update_timer() {
-            elapsed_time += Date.now() - start_time;
-            start_time = Date.now();
-            document.getElementById('timer').textContent = format_time(elapsed_time);
+            if (mode === 'stopwatch') {
+                elapsed_time += Date.now() - start_time;
+                start_time = Date.now();
+                document.getElementById('timer').textContent = format_time(elapsed_time);
+            } else if (mode === 'countdown') {
+                elapsed_time -= Date.now() - start_time;
+                start_time = Date.now();
+                if (elapsed_time <= 0) {
+                    elapsed_time = 0;
+                    is_running = false;
+                    cancelAnimationFrame(timer);
+                    alert('倒计时结束！');
+                }
+                document.getElementById('timer').textContent = format_time(elapsed_time);
+            }
             timer = requestAnimationFrame(update_timer);
         }
 
+        // 切换模式
+        document.querySelectorAll('input[name="mode"]').forEach((radio) => {
+            radio.addEventListener('change', (event) => {
+                mode = event.target.value;
+                if (mode === 'countdown') {
+                    document.getElementById('countdown-input').style.display = 'block';
+                } else {
+                    document.getElementById('countdown-input').style.display = 'none';
+                }
+                reset_timer();
+            });
+        });
+
+        // 开始按钮
         document.getElementById('start').addEventListener('click', () => {
             if (!is_running) {
+                if (mode === 'countdown') {
+                    const hours = parseInt(document.getElementById('hours').value) || 0;
+                    const minutes = parseInt(document.getElementById('minutes').value) || 0;
+                    const seconds = parseInt(document.getElementById('seconds').value) || 0;
+                    elapsed_time = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                    if (elapsed_time <= 0) {
+                        alert('请输入有效的倒计时时间！');
+                        return;
+                    }
+                }
                 is_running = true;
                 start_time = Date.now();
-                elapsed_time += 1000; // 立即增加 1 秒
-                document.getElementById('timer').textContent = format_time(elapsed_time);
                 timer = requestAnimationFrame(update_timer);
                 document.getElementById('start').textContent = '继续';
             }
         });
 
+        // 暂停按钮
         document.getElementById('pause').addEventListener('click', () => {
             if (is_running) {
                 is_running = false;
@@ -132,13 +213,19 @@
             }
         });
 
+        // 重置按钮
         document.getElementById('reset').addEventListener('click', () => {
+            reset_timer();
+        });
+
+        // 重置计时器
+        function reset_timer() {
             is_running = false;
             cancelAnimationFrame(timer);
             elapsed_time = 0;
             document.getElementById('timer').textContent = format_time(elapsed_time);
             document.getElementById('start').textContent = '开始';
-        });
+        }
     </script>
 </body>
 
