@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机数生成器</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* 深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            h1 {
+                color: #1a73e8;
+            }
+
+            .container {
+                background-color: #1e1e1e;
+                box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            }
+
+            input {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border-color: #555;
+            }
+
+            input:focus {
+                border-color: #1a73e8;
+            }
+
+            button {
+                background-color: #1a73e8;
+            }
+
+            button:hover {
+                background-color: #1557b0;
+            }
+
+            .result {
+                color: #1a73e8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>随机数生成器</h1>
+        <label for="min">最小值：</label>
+        <input type="number" id="min" placeholder="请输入最小值">
+        <label for="max">最大值：</label>
+        <input type="number" id="max" placeholder="请输入最大值">
+        <button id="generate">生成随机数</button>
+        <div class="result" id="result">随机数将显示在这里</div>
+    </div>
+
+    <script>
+        // 监听生成按钮点击事件
+        document.getElementById('generate').addEventListener('click', () => {
+            const min = parseInt(document.getElementById('min').value);
+            const max = parseInt(document.getElementById('max').value);
+
+            // 检查输入是否有效
+            if (isNaN(min) || isNaN(max)) {
+                document.getElementById('result').textContent = '请输入有效的数字！';
+                return;
+            }
+
+            if (min >= max) {
+                document.getElementById('result').textContent = '最小值必须小于最大值！';
+                return;
+            }
+
+            // 输出随机数
+            document.getElementById('result').textContent = `随机数：${Math.floor(Math.random() * (max - min + 1)) + min}`;
+        });
+    </script>
+</body>
+
+</html>
