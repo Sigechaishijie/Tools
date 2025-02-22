@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思哥の工具库</title>
+    <style>
+        /* 全局 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 20px;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 内容容器 */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 分类标题 */
+        .category-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        /* 链接列表 */
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-list li {
+            margin: 10px 0;
+        }
+
+        .link-list a {
+            display: block;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .link-list a:hover {
+            background-color: #e2e6ea;
+            transform: translateY(-2px);
+        }
+
+        .link-list a:active {
+            transform: translateY(0);
+        }
+
+        /* 深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            .navbar {
+                background-color: #1a73e8;
+            }
+
+            .container {
+                background-color: #1e1e1e;
+                box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            }
+
+            .category-title {
+                color: #1a73e8;
+                border-bottom-color: #1a73e8;
+            }
+
+            .link-list a {
+                background-color: #333;
+                color: #1a73e8;
+            }
+
+            .link-list a:hover {
+                background-color: #444;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <h1>思哥の工具库</h1>
+    </div>
+
+    <!-- 内容容器 -->
+    <div class="container">
+        <!-- 分类 1 -->
+        <div class="category">
+            <div class="category-title">时间类</div>
+            <ul class="link-list">
+                <li><a href="https://tools.albert-peng.top/time/unix_timestamp.html" target="_blank">Unix 时间戳转换</a></li>
+                <li><a href="https://tools.albert-peng.top/time/time_now.html" target="_blank">当前时间</a></li>
+                <li><a href="https://tools.albert-peng.top/time/timer.html" target="_blank">计时器</a></li>
+            </ul>
+        </div>
+
+        <!-- 分类 2 -->
+        <div class="category">
+            <div class="category-title">字符类</div>
+            <ul class="link-list">
+                <li><a href="https://tools.albert-peng.top/char/ascii.html" target="_blank">ASCII 编码表</a></li>
+                <li><a href="https://tools.albert-peng.top/char/editor_markdown.html" target="_blank">Markdown 编辑器</a></li>
+                <li><a href="https://tools.albert-peng.top/char/av2bv.html" target="_blank">B 站 AV / BV 号转换器</a></li>
+            </ul>
+        </div>
+
+        <!-- 分类 3 -->
+        <div class="category">
+            <div class="category-title">数学类</div>
+            <ul class="link-list">
+                <li><a href="https://tools.albert-peng.top/maths/bin_oct_dec_hex.html" target="_blank">进制转换器</a></li>
+                <li><a href="https://tools.albert-peng.top/maths/pow.html" target="_blank">乘方计算器</a></li>
+                <li><a href="https://tools.albert-peng.top/maths/random.html" target="_blank">随机数生成器</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
