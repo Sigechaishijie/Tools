@@ -21,16 +21,51 @@
 
         .container {
             background-color: #fff;
-            padding: 40px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            width: 80%;
+            max-width: 600px;
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
         h1 {
             margin-bottom: 20px;
             font-size: 24px;
+        }
+
+        .tab_buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab_buttons button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            background-color: #ddd;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .tab_buttons button.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .tab_content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .tab_content.active {
+            display: block;
         }
 
         .timer {
@@ -40,12 +75,20 @@
             margin-bottom: 20px;
         }
 
-        .mode-selector {
-            margin-bottom: 20px;
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
 
-        .mode-selector label {
-            margin-right: 10px;
+        input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
         }
 
         button {
@@ -68,22 +111,6 @@
             background-color: #004080;
         }
 
-        input[type="number"] {
-            width: 60px;
-            padding: 5px;
-            margin: 5px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            text-align: center;
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-        }
-
-        input[type="number"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
         /* 深色模式 */
         @media (prefers-color-scheme: dark) {
             body {
@@ -96,17 +123,22 @@
                 box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             }
 
-            .timer {
-                color: #1a73e8;
-            }
-
-            button {
+            .tab_buttons button {
                 background-color: #444;
                 color: #e0e0e0;
             }
 
-            button:hover {
-                background-color: #555;
+            .tab_buttons button.active {
+                background-color: #1a73e8;
+                color: white;
+            }
+
+            .tab_content {
+                border-color: #555;
+            }
+
+            .timer {
+                color: #1a73e8;
             }
 
             input[type="number"] {
@@ -118,6 +150,14 @@
             input[type="number"]:focus {
                 border-color: #1a73e8;
             }
+
+            button {
+                background-color: #1a73e8;
+            }
+
+            button:hover {
+                background-color: #1557b0;
+            }
         }
     </style>
 </head>
@@ -125,27 +165,33 @@
 <body>
     <div class="container">
         <h1>计时器</h1>
-        <div class="mode-selector">
-            <label>
-                <input type="radio" name="mode" value="stopwatch" checked> 计时模式
-            </label>
-            <label>
-                <input type="radio" name="mode" value="countdown"> 倒计时模式
-            </label>
+        <div class="tab_buttons">
+            <button class="active" data_tab="stopwatch">计时模式</button>
+            <button data_tab="countdown">倒计时模式</button>
         </div>
-        <div class="timer" id="timer">00:00:00</div>
-        <div id="countdown-input" style="display: none;">
-            <input type="number" id="hours" placeholder="小时" min="0">
-            <input type="number" id="minutes" placeholder="分钟" min="0" max="59">
-            <input type="number" id="seconds" placeholder="秒" min="0" max="59">
+
+        <div class="tab_content active" id="stopwatch">
+            <div class="timer" id="timer">00:00:00</div>
+            <button id="start">开始</button>
+            <button id="pause">暂停</button>
+            <button id="reset">重置</button>
         </div>
-        <button id="start">开始</button>
-        <button id="pause">暂停</button>
-        <button id="reset">重置</button>
+
+        <div class="tab_content" id="countdown">
+            <div class="timer" id="countdown_timer">00:00:00</div>
+            <div id="countdown_input">
+                <input type="number" id="hours" placeholder="小时" min="0">
+                <input type="number" id="minutes" placeholder="分钟" min="0" max="59">
+                <input type="number" id="seconds" placeholder="秒" min="0" max="59">
+            </div>
+            <button id="start_countdown">开始</button>
+            <button id="pause_countdown">暂停</button>
+            <button id="reset_countdown">重置</button>
+        </div>
     </div>
 
     <script>
-        let timer, start_time, elapsed_time = 0, is_running = false, mode = 'stopwatch'; // 默认模式为计时模式
+        let timer, start_time, elapsed_time = 0, is_running = false, mode = 'stopwatch';
 
         // 格式化时间
         function format_time(ms) {
@@ -167,20 +213,19 @@
                     cancelAnimationFrame(timer);
                     alert('倒计时结束！');
                 }
-                document.getElementById('timer').textContent = format_time(elapsed_time);
+                document.getElementById('countdown_timer').textContent = format_time(elapsed_time);
             }
             timer = requestAnimationFrame(update_timer);
         }
 
-        // 切换模式
-        document.querySelectorAll('input[name="mode"]').forEach((radio) => {
-            radio.addEventListener('change', (event) => {
-                mode = event.target.value;
-                if (mode === 'countdown') {
-                    document.getElementById('countdown-input').style.display = 'block';
-                } else {
-                    document.getElementById('countdown-input').style.display = 'none';
-                }
+        // 切换选项卡
+        document.querySelectorAll('.tab_buttons button').forEach((button) => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab_buttons button').forEach((btn) => btn.classList.remove('active'));
+                document.querySelectorAll('.tab_content').forEach((content) => content.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(button.getAttribute('data_tab')).classList.add('active');
+                mode = button.getAttribute('data_tab');
                 reset_timer();
             });
         });
@@ -188,20 +233,28 @@
         // 开始按钮
         document.getElementById('start').addEventListener('click', () => {
             if (!is_running) {
-                if (mode === 'countdown') {
-                    const hours = parseInt(document.getElementById('hours').value) || 0;
-                    const minutes = parseInt(document.getElementById('minutes').value) || 0;
-                    const seconds = parseInt(document.getElementById('seconds').value) || 0;
-                    elapsed_time = (hours * 3600 + minutes * 60 + seconds) * 1000;
-                    if (elapsed_time <= 0) {
-                        alert('请输入有效的倒计时时间！');
-                        return;
-                    }
-                }
                 is_running = true;
                 start_time = Date.now();
                 timer = requestAnimationFrame(update_timer);
                 document.getElementById('start').textContent = '继续';
+            }
+        });
+
+        // 开始倒计时按钮
+        document.getElementById('start_countdown').addEventListener('click', () => {
+            if (!is_running) {
+                const hours = parseInt(document.getElementById('hours').value) || 0;
+                const minutes = parseInt(document.getElementById('minutes').value) || 0;
+                const seconds = parseInt(document.getElementById('seconds').value) || 0;
+                elapsed_time = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                if (elapsed_time <= 0) {
+                    alert('请输入有效的倒计时时间！');
+                    return;
+                }
+                is_running = true;
+                start_time = Date.now();
+                timer = requestAnimationFrame(update_timer);
+                document.getElementById('start_countdown').textContent = '继续';
             }
         });
 
@@ -213,8 +266,21 @@
             }
         });
 
+        // 暂停倒计时按钮
+        document.getElementById('pause_countdown').addEventListener('click', () => {
+            if (is_running) {
+                is_running = false;
+                cancelAnimationFrame(timer);
+            }
+        });
+
         // 重置按钮
         document.getElementById('reset').addEventListener('click', () => {
+            reset_timer();
+        });
+
+        // 重置倒计时按钮
+        document.getElementById('reset_countdown').addEventListener('click', () => {
             reset_timer();
         });
 
@@ -224,7 +290,9 @@
             cancelAnimationFrame(timer);
             elapsed_time = 0;
             document.getElementById('timer').textContent = format_time(elapsed_time);
+            document.getElementById('countdown_timer').textContent = format_time(elapsed_time);
             document.getElementById('start').textContent = '开始';
+            document.getElementById('start_countdown').textContent = '开始';
         }
     </script>
 </body>
